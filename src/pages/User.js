@@ -1,79 +1,46 @@
 import React, { Component } from "react";
-import MemberCard from "../components/MemberCard";
 import { Modal } from "bootstrap";
+import UserCard from "../components/UserCard";
 import axios from "axios";
 
-export default class Member extends Component {
+export default class User extends Component {
   constructor() {
     super();
     this.state = {
-      id_member: "",
+      id_user: "",
       nama: "",
-      alamat: "",
-      jenis_kelamin: "",
-      telpon: "",
+      username: "",
+      password: "",
+      role: "",
       action: "",
 
-      members: [],
+      users: [],
     };
   }
 
   getData() {
-    let endpoint = "http://localhost:8000/api/member";
+    let endpoint = "http://localhost:8000/api/users";
     axios
       .get(endpoint)
       .then((response) => {
-        this.setState({ members: response.data });
+        this.setState({ users: response.data });
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => console.log(error));
   }
+
   componentDidMount() {
     this.getData();
   }
 
-  tambahData() {
-    this.modalMember = new Modal(document.getElementById("modal_member"));
-    this.modalMember.show();
-    this.setState({
-      id_member: Math.random(1, 10000),
-      nama: "",
-      alamat: "",
-      jenis_kelamin: "Pria",
-      telpon: "",
-      action: "tambah",
-    });
-  }
-
-  ubahData(id_member) {
-    this.modalMember = new Modal(document.getElementById("modal_member"));
-    this.modalMember.show();
-
-    let index = this.state.members.findIndex(
-      (member) => member.id_member === id_member
-    );
-    this.setState({
-      id_member: id_member,
-      nama: this.state.members[index].nama,
-      alamat: this.state.members[index].alamat,
-      jenis_kelamin: this.state.members[index].jenis_kelamin,
-      telpon: this.state.members[index].telpon,
-      action: "ubah",
-    });
-  }
-
   simpanData(event) {
     event.preventDefault();
-
     if (this.state.action === "tambah") {
-      let endpoint = "http://localhost:8000/api/member";
+      let endpoint = "http://localhost:8000/api/users";
       let data = {
-        id_member: this.state.id_member,
         nama: this.state.nama,
-        alamat: this.state.alamat,
-        jenis_kelamin: this.state.jenis_kelamin,
-        telpon: this.state.telpon,
+        username: this.state.username,
+        password: this.state.password,
+        role: this.state.role,
       };
       // let temp = this.state.members;
       // temp.push(data);
@@ -86,16 +53,15 @@ export default class Member extends Component {
           this.getData();
         })
         .catch((error) => console.log(error));
-      this.modalMember.hide();
+      this.modalUser.hide();
     } else if (this.state.action === "ubah") {
-      let endpoint = "http://localhost:8000/api/member/" + this.state.id_member;
+      let endpoint = "http://localhost:8000/api/users/" + this.state.id_user;
 
       let data = {
-        id_member: this.state.id_member,
         nama: this.state.nama,
-        alamat: this.state.alamat,
-        jenis_kelamin: this.state.jenis_kelamin,
-        telpon: this.state.telpon,
+        username: this.state.username,
+        password: this.state.password,
+        role: this.state.role,
       };
       axios
         .put(endpoint, data)
@@ -115,13 +81,42 @@ export default class Member extends Component {
       // temp[index].telpon = this.state.telpon;
 
       // this.setState({ members: temp });
-      this.modalMember.hide();
+      this.modalUser.hide();
     }
+  }
+
+  tambahData() {
+    this.modalUser = new Modal(document.getElementById("modal_user"));
+    this.modalUser.show();
+
+    this.setState({
+      nama: "",
+      username: "",
+      password: "",
+      role: "User",
+      action: "tambah",
+    });
+  }
+
+  ubahData(id) {
+    this.modalUser = new Modal(document.getElementById("modal_user"));
+    this.modalUser.show();
+
+    let index = this.state.users.findIndex((user) => user.id_user === id);
+
+    this.setState({
+      id_user: id,
+      nama: this.state.users[index].nama,
+      username: this.state.users[index].username,
+      password: this.state.password,
+      role: this.state.users[index].role,
+      action: "ubah",
+    });
   }
 
   hapusData(id) {
     if (window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
-      let endpoint = "http://localhost:8000/api/member/" + id;
+      let endpoint = "http://localhost:8000/api/users/" + id;
       axios
         .delete(endpoint)
         .then((response) => {
@@ -137,38 +132,37 @@ export default class Member extends Component {
       <div className="container">
         <div className="card">
           <div className="card-header bg-primary">
-            <h3 className="text-white">List of Member</h3>
+            <h3 className="text-white">List User</h3>
           </div>
           <div className="card-body">
             <button
               className="btn btn-secondary btn-md my-1"
               onClick={() => this.tambahData()}
             >
-              Tambah Data Member
+              Tambah data User
             </button>
             <hr />
             <ul className="list-group">
-              {this.state.members.map((member) => (
+              {this.state.users.map((user) => (
                 <li className="list-group-item">
-                  <MemberCard
-                    nama={member.nama}
-                    jenis_kelamin={member.jenis_kelamin}
-                    telepon={member.telpon}
-                    alamat={member.alamat}
-                    edit={() => this.ubahData(member.id_member)}
-                    hapus={() => this.hapusData(member.id_member)}
-                  />
+                  <UserCard
+                    nama={user.nama}
+                    username={user.username}
+                    role={user.role}
+                    edit={() => this.ubahData(user.id_user)}
+                    hapus={() => this.hapusData(user.id_user)}
+                  ></UserCard>
                 </li>
               ))}
             </ul>
           </div>
         </div>
         {/* Modal */}
-        <div className="modal" id="modal_member">
+        <div className="modal" id="modal_user">
           <div className="modal-dialog modal-md">
             <div className="modal-content">
               <div className="modal-header bg-primary">
-                <h4 className="text-white">Form Data Member</h4>
+                <h4 className="text-white">Form Data Paket</h4>
               </div>
               <div className="modal-body">
                 <form onSubmit={(ev) => this.simpanData(ev)}>
@@ -179,35 +173,33 @@ export default class Member extends Component {
                     value={this.state.nama}
                     onChange={(ev) => this.setState({ nama: ev.target.value })}
                   />
-                  Alamat
+                  Username
                   <input
                     type="text"
                     className="form-control mb-2"
-                    value={this.state.alamat}
+                    value={this.state.username}
                     onChange={(ev) =>
-                      this.setState({ alamat: ev.target.value })
+                      this.setState({ username: ev.target.value })
                     }
                   />
-                  Jenis Kelamin
+                  Password
+                  <input
+                    type="password"
+                    className="form-control mb-2"
+                    value={this.state.password}
+                    onChange={(ev) =>
+                      this.setState({ password: ev.target.value })
+                    }
+                  />
+                  Role
                   <select
                     className="form-control mb-2"
-                    value={this.state.jenis_kelamin}
-                    onChange={(ev) =>
-                      this.setState({ jenis_kelamin: ev.target.value })
-                    }
+                    value={this.state.role}
+                    onChange={(ev) => this.setState({ role: ev.target.value })}
                   >
-                    <option value="Wanita">Wanita</option>
-                    <option value="Pria">Pria</option>
+                    <option value="User">User</option>
+                    <option value="Admin">Admin</option>
                   </select>
-                  No. telpon
-                  <input
-                    type="text"
-                    className="form-control mb-2"
-                    value={this.state.telpon}
-                    onChange={(ev) =>
-                      this.setState({ telpon: ev.target.value })
-                    }
-                  />
                   <button className="btn btn-primary" type="submit">
                     Simpan
                   </button>
