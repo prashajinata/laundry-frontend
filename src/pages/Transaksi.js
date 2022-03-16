@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { Component } from "react";
 import { baseUrl } from "../config";
+import domToPdf from "dom-to-pdf";
 
 export default class Transaksi extends Component {
   constructor() {
@@ -154,7 +155,25 @@ export default class Transaksi extends Component {
     }
   }
 
+  convertToPdf() {
+    let element = document.getElementById(`target`);
+    let options = {
+      filename: `Laporan.pdf`,
+    };
+
+    domToPdf(element, options, () => {
+      window.alert("Dokumen akan dicetak");
+    });
+  }
+
   render() {
+    const target = React.createRef();
+    const optionPDF = {
+      orientation: `landscape`,
+      unit: `cm`,
+      format: [21, 29.7],
+    };
+
     return (
       <div className="container">
         <div className="card">
@@ -164,7 +183,13 @@ export default class Transaksi extends Component {
           <div className="card-body">
             <ul className="list-group">
               {this.state.transaksi.map((trans) => (
-                <li className="list-group-item">
+                <li className="list-group-item" ref={target} id="target">
+                  <button
+                    className="btn btn-success mb-2"
+                    onClick={() => this.convertToPdf()}
+                  >
+                    Cetak Laporan
+                  </button>
                   <div className="row">
                     <div className="col-lg-3">
                       <small className="text-info">Member</small>
@@ -213,16 +238,14 @@ export default class Transaksi extends Component {
                       </small>
                       Rp {trans.total}
                     </div>
-                    <div className="col-lg-3">
-                      <br />
-                      <button
-                        className="btn btn-sm btn-danger"
-                        onClick={() => this.deleteTransaksi(trans.id_transaksi)}
-                      >
-                        Hapus
-                      </button>
-                    </div>
                   </div>
+                  <br />
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => this.deleteTransaksi(trans.id_transaksi)}
+                  >
+                    Hapus
+                  </button>
                   <hr />
                   <h5>Detail Transaksi</h5>
                   {trans.detail_transaksi.map((detail) => (
