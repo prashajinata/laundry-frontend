@@ -14,6 +14,9 @@ export default class Paket extends Component {
 
       list_paket: [],
     };
+    if (!localStorage.getItem("token")) {
+      window.location.href = "/auth";
+    }
   }
 
   getData() {

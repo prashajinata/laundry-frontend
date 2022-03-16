@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import MemberCard from "../components/MemberCard";
 import { Modal } from "bootstrap";
 import axios from "axios";
+import { authorization, checkUser } from "../config";
 
 export default class Member extends Component {
   constructor() {
@@ -16,12 +17,15 @@ export default class Member extends Component {
 
       members: [],
     };
+    if (!localStorage.getItem("token")) {
+      window.location.href = "/auth";
+    }
   }
 
   getData() {
     let endpoint = "http://localhost:8000/api/member";
     axios
-      .get(endpoint)
+      .get(endpoint, authorization)
       .then((response) => {
         this.setState({ members: response.data });
       })
@@ -80,7 +84,7 @@ export default class Member extends Component {
       // this.setState({ members: temp });
 
       axios
-        .post(endpoint, data)
+        .post(endpoint, data, authorization)
         .then((response) => {
           window.alert(response.data.message);
           this.getData();
@@ -98,7 +102,7 @@ export default class Member extends Component {
         telpon: this.state.telpon,
       };
       axios
-        .put(endpoint, data)
+        .put(endpoint, data, authorization)
         .then((response) => {
           window.alert(response.data.message);
           this.getData();
@@ -123,7 +127,7 @@ export default class Member extends Component {
     if (window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
       let endpoint = "http://localhost:8000/api/member/" + id;
       axios
-        .delete(endpoint)
+        .delete(endpoint, authorization)
         .then((response) => {
           window.alert(response.data.message);
           this.getData();

@@ -16,6 +16,9 @@ export default class User extends Component {
 
       users: [],
     };
+    if (!localStorage.getItem("token")) {
+      window.location.href = "/auth";
+    }
   }
 
   getData() {

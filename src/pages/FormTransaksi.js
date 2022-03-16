@@ -21,6 +21,9 @@ export default class FormTransaksi extends Component {
       harga: 0,
       action: "",
     };
+    if (!localStorage.getItem("token")) {
+      window.location.href = "/auth";
+    }
   }
 
   getMember() {

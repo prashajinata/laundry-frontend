@@ -8,6 +8,9 @@ export default class Transaksi extends Component {
     this.state = {
       transaksi: [],
     };
+    if (!localStorage.getItem("token")) {
+      window.location.href = "/auth";
+    }
   }
 
   getData() {

@@ -26,6 +26,7 @@ export default class Login extends Component {
           localStorage.setItem("token", result.data.token);
           localStorage.setItem("user", JSON.stringify(result.data.user));
           window.alert("dino apik");
+          window.location.href = "/";
         } else {
           window.alert("dino ajur");
         }
