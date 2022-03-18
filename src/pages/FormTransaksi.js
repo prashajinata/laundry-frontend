@@ -245,8 +245,8 @@ export default class FormTransaksi extends Component {
             <div className="modal" id="modal_paket">
               <div className="modal-dialog modal-md">
                 <div className="modal-content">
-                  <div className="modal-header bg-danger">
-                    <h4 className="text-white">Pilih Paket</h4>
+                  <div className="modal-header">
+                    <h4 className="">Pilih Paket</h4>
                   </div>
                   <div className="modal-body">
                     <form onSubmit={(ev) => this.tambahPaket(ev)}>
