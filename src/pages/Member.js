@@ -174,6 +174,7 @@ export default class Member extends Component {
                 <form onSubmit={(ev) => this.simpanData(ev)}>
                   Nama
                   <input
+                    required
                     type="text"
                     className="form-control mb-2"
                     value={this.state.nama}
@@ -181,6 +182,7 @@ export default class Member extends Component {
                   />
                   Alamat
                   <input
+                    required
                     type="text"
                     className="form-control mb-2"
                     value={this.state.alamat}
@@ -190,6 +192,7 @@ export default class Member extends Component {
                   />
                   Jenis Kelamin
                   <select
+                    required
                     className="form-control mb-2"
                     value={this.state.jenis_kelamin}
                     onChange={(ev) =>
@@ -201,6 +204,7 @@ export default class Member extends Component {
                   </select>
                   No. telpon
                   <input
+                    required
                     type="text"
                     className="form-control mb-2"
                     value={this.state.telpon}

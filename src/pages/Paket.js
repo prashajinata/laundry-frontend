@@ -161,6 +161,7 @@ export default class Paket extends Component {
                 <form onSubmit={(ev) => this.simpanData(ev)}>
                   Nama Paket
                   <input
+                    required
                     type="text"
                     className="form-control mb-2"
                     value={this.state.jenis_paket}
@@ -170,6 +171,7 @@ export default class Paket extends Component {
                   />
                   Harga
                   <input
+                    required
                     type="text"
                     className="form-control mb-2"
                     value={this.state.harga}

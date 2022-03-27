@@ -22,6 +22,48 @@ export default class User extends Component {
     }
   }
 
+  gantiPasswordButton() {
+    if (this.state.action === "ubah") {
+      return (
+        <button
+          type="button"
+          className="btn btn-primary mx-2"
+          onClick={() => {
+            // console.log(this.state.tambahPassword);
+            let tambah = this.state.tambahPassword ? false : true;
+            // console.log(tambah);
+            this.setState({ tambahPassword: tambah });
+          }}
+        >
+          {this.state.tambahPassword
+            ? "Tidak Ganti Password"
+            : "Ganti Password"}
+        </button>
+      );
+    } else {
+      return;
+    }
+  }
+
+  passwordBox() {
+    if (this.state.tambahPassword) {
+      return (
+        <>
+          Password
+          <input
+            required
+            type="password"
+            className="form-control mb-2"
+            value={this.state.password}
+            onChange={(ev) => this.setState({ password: ev.target.value })}
+          />
+        </>
+      );
+    } else {
+      return;
+    }
+  }
+
   getData() {
     let endpoint = `${baseUrl}/users`;
     axios
@@ -61,12 +103,18 @@ export default class User extends Component {
     } else if (this.state.action === "ubah") {
       let endpoint = `${baseUrl}/users/` + this.state.id_user;
 
-      let data = {
-        nama: this.state.nama,
-        username: this.state.username,
-        password: this.state.password,
-        role: this.state.role,
-      };
+      let data = this.state.tambahPassword
+        ? {
+            nama: this.state.nama,
+            username: this.state.username,
+            password: this.state.password,
+            role: this.state.role,
+          }
+        : {
+            nama: this.state.nama,
+            username: this.state.username,
+            role: this.state.role,
+          };
       axios
         .put(endpoint, data, authorization)
         .then((response) => {
@@ -98,6 +146,7 @@ export default class User extends Component {
       username: "",
       password: "",
       role: "",
+      tambahPassword: false,
       action: "tambah",
     });
   }
@@ -168,6 +217,7 @@ export default class User extends Component {
                 <form onSubmit={(ev) => this.simpanData(ev)}>
                   Nama
                   <input
+                    required
                     type="text"
                     className="form-control mb-2"
                     value={this.state.nama}
@@ -175,6 +225,7 @@ export default class User extends Component {
                   />
                   Username
                   <input
+                    required
                     type="text"
                     className="form-control mb-2"
                     value={this.state.username}
@@ -182,17 +233,9 @@ export default class User extends Component {
                       this.setState({ username: ev.target.value })
                     }
                   />
-                  Password
-                  <input
-                    type="password"
-                    className="form-control mb-2"
-                    value={this.state.password}
-                    onChange={(ev) =>
-                      this.setState({ password: ev.target.value })
-                    }
-                  />
                   Role
                   <select
+                    required
                     className="form-control mb-2"
                     value={this.state.role}
                     onChange={(ev) => this.setState({ role: ev.target.value })}
@@ -203,9 +246,11 @@ export default class User extends Component {
                     <option value="kasir">Kasir</option>
                     <option value="admin">Admin</option>
                   </select>
+                  {this.passwordBox()}
                   <button className="btn btn-primary" type="submit">
                     Simpan
                   </button>
+                  {this.gantiPasswordButton()}
                 </form>
               </div>
             </div>

@@ -85,15 +85,15 @@ export default class FormTransaksi extends Component {
   }
 
   editPaket() {
-    // this.modal = new Modal(document.getElementById("modal_paket"));
-    // this.modal.show();
-    // this.setState({
-    //   id_paket: "",
-    //   qty: 0,
-    //   jenis_paket: "",
-    //   harga: 0,
-    //   action: "edit",
-    // });
+    this.modal = new Modal(document.getElementById("modal_paket"));
+    this.modal.show();
+    this.setState({
+      id_paket: "",
+      qty: 0,
+      jenis_paket: "",
+      harga: 0,
+      action: "edit",
+    });
   }
 
   hapusPaket(id_paket) {
