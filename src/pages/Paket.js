@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Modal } from "bootstrap";
 import PaketCard from "../components/PaketCard";
 import axios from "axios";
+import { authorization, baseUrl } from "../config";
 
 export default class Paket extends Component {
   constructor() {
@@ -20,9 +21,9 @@ export default class Paket extends Component {
   }
 
   getData() {
-    let endpoint = "http://localhost:8000/api/paket";
+    let endpoint = "http://localhost:8001/api/paket";
     axios
-      .get(endpoint)
+      .get(endpoint, authorization)
       .then((response) => {
         this.setState({ list_paket: response.data });
       })
@@ -50,7 +51,7 @@ export default class Paket extends Component {
     event.preventDefault();
 
     if (this.state.action === "tambah") {
-      let endpoint = "http://localhost:8000/api/paket";
+      let endpoint = `${baseUrl}/paket`;
       let data = {
         jenis_paket: this.state.jenis_paket,
         harga: this.state.harga,
@@ -60,7 +61,7 @@ export default class Paket extends Component {
       // this.setState({ members: temp });
 
       axios
-        .post(endpoint, data)
+        .post(endpoint, data, authorization)
         .then((response) => {
           window.alert(response.data.message);
           this.getData();
@@ -68,14 +69,14 @@ export default class Paket extends Component {
         .catch((error) => console.log(error));
       this.modalPaket.hide();
     } else if (this.state.action === "ubah") {
-      let endpoint = "http://localhost:8000/api/paket/" + this.state.id_paket;
+      let endpoint = `${baseUrl}/paket/` + this.state.id_paket;
 
       let data = {
         jenis_paket: this.state.jenis_paket,
         harga: this.state.harga,
       };
       axios
-        .put(endpoint, data)
+        .put(endpoint, data, authorization)
         .then((response) => {
           window.alert(response.data.message);
           this.getData();
@@ -114,9 +115,9 @@ export default class Paket extends Component {
 
   hapusData(id) {
     if (window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
-      let endpoint = "http://localhost:8000/api/paket/" + id;
+      let endpoint = `${baseUrl}/paket/` + id;
       axios
-        .delete(endpoint)
+        .delete(endpoint, authorization)
         .then((response) => {
           window.alert(response.data.message);
           this.getData();
@@ -127,35 +128,30 @@ export default class Paket extends Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="card">
-          <div className="card-header bg-primary">
-            <h3 className="text-white">List paket</h3>
-          </div>
-          <div className="card-body">
-            <button
-              className="btn btn-secondary btn-md my-1"
-              onClick={() => this.tambahData()}
-            >
-              Tambah data Paket
-            </button>
-            <hr />
-            <ul className="list-group">
-              {this.state.list_paket.map((paket) => (
-                <li className="list-group-item">
-                  <PaketCard
-                    nama_paket={paket.jenis_paket}
-                    harga_paket={paket.harga}
-                    edit={() => this.ubahData(paket.id_paket)}
-                    hapus={() => this.hapusData(paket.id_paket)}
-                  ></PaketCard>
-                </li>
-              ))}
-            </ul>
-          </div>
+      <>
+        <div className="container">
+          <h3 className="text-primary">List Paket</h3>
+          <button
+            className="btn btn-secondary btn-md my-1"
+            onClick={() => this.tambahData()}
+          >
+            Tambah data Paket
+          </button>
+          <hr />
+          <ul className="list-group">
+            {this.state.list_paket.map((paket, index) => (
+              <li className="list-group-item" key={index}>
+                <PaketCard
+                  nama_paket={paket.jenis_paket}
+                  harga_paket={paket.harga}
+                  edit={() => this.ubahData(paket.id_paket)}
+                  hapus={() => this.hapusData(paket.id_paket)}
+                ></PaketCard>
+              </li>
+            ))}
+          </ul>
         </div>
-        {/* Modal */}
-        <div className="modal" id="modal_paket">
+        <div className="modal modal-fade fade" id="modal_paket">
           <div className="modal-dialog modal-md">
             <div className="modal-content">
               <div className="modal-header bg-primary">
@@ -185,10 +181,10 @@ export default class Paket extends Component {
                 </form>
               </div>
             </div>
+            {/* Modal */}
           </div>
         </div>
-        {/* Modal */}
-      </div>
+      </>
     );
   }
 }

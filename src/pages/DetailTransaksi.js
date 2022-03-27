@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import domToPdf from "dom-to-pdf";
+import { formatNumber, baseUrl, authorization } from "../config.js";
 
 export default class DetailTransaksi extends Component {
   constructor() {
@@ -18,10 +19,9 @@ export default class DetailTransaksi extends Component {
     if (
       window.confirm("Apakah anda yakin ingin mengganti status pembayaran ini?")
     ) {
-      let endpoint = `http://localhost:8000/api/transaksi/bayar/${id}`;
-      console.log(endpoint);
+      let endpoint = `${baseUrl}/transaksi/bayar/${id}`;
       axios
-        .get(endpoint)
+        .get(endpoint, authorization)
         .then((response) => {
           window.alert(`Pembayaran Transaksi Telah Diubah`);
           this.getData();
@@ -34,14 +34,14 @@ export default class DetailTransaksi extends Component {
     if (
       window.confirm("Apakah anda yakin ingin mengganti status transaksi ini?")
     ) {
-      let endpoint = `http://localhost:8000/api/transaksi/status/${id}`;
+      let endpoint = `${baseUrl}/transaksi/status/${id}`;
 
       let data = {
         status: status,
       };
 
       axios
-        .post(endpoint, data)
+        .post(endpoint, data, authorization)
         .then((response) => {
           window.alert(`Status Transaksi Telah Diubah`);
           this.getData();
@@ -53,9 +53,9 @@ export default class DetailTransaksi extends Component {
   convertToPdf() {
     let element = document.getElementById(`target`);
     let options = {
-      orientation: "landscape",
-      unit: "in",
-      format: [4, 2],
+      orientation: "portrait",
+      scale: 0.5,
+      format: [2, 4],
       filename: `laporan_${this.getParams()}.pdf`,
     };
 
@@ -68,9 +68,12 @@ export default class DetailTransaksi extends Component {
     if (status === 1) {
       return (
         <div className="d-flex justify-content-between">
-          <h6 className="text-info">Transaksi baru</h6>
+          <div>
+            <h6>Status Proses</h6>
+            <h6 className="text-info">Transaksi baru</h6>
+          </div>
           <button
-            className="btn btn-sm btn-primary"
+            className="btn btn-md btn-primary"
             onClick={() => this.changeStatus(id_transaksi, 2)}
           >
             Update Status
@@ -80,9 +83,12 @@ export default class DetailTransaksi extends Component {
     } else if (status === 2) {
       return (
         <div className="d-flex justify-content-between">
-          <h6 className="text-warning">Sedang Di Proses</h6>
+          <div>
+            <h6>Status Proses</h6>
+            <h6 className="text-warning">Sedang Di Proses</h6>
+          </div>
           <button
-            className="btn btn-sm btn-primary"
+            className="btn btn-md btn-primary"
             onClick={() => this.changeStatus(id_transaksi, 3)}
           >
             Update Status
@@ -92,9 +98,12 @@ export default class DetailTransaksi extends Component {
     } else if (status === 3) {
       return (
         <div className="d-flex justify-content-between">
-          <h6 className="text-success">Siap Di Ambil</h6>
+          <div>
+            <h6>Status Proses</h6>
+            <h6 className="text-success">Siap Di Ambil</h6>
+          </div>
           <button
-            className="btn btn-sm btn-primary"
+            className="btn btn-md btn-primary"
             onClick={() => this.changeStatus(id_transaksi, 4)}
           >
             Update Status
@@ -110,12 +119,15 @@ export default class DetailTransaksi extends Component {
     if (status === 0) {
       return (
         <div className="d-flex justify-content-between">
-          <h6 className="text-danger">Belum Dibayar</h6>
+          <div>
+            <h6>Status Pembayaran</h6>
+            <h6 className="text-danger">Belum Dibayar</h6>
+          </div>
           <button
-            className="btn btn-sm btn-secondary"
+            className="btn btn-md btn-success"
             onClick={() => this.changeBayar(id_transaksi)}
           >
-            Update Status
+            $ Terbayar $
           </button>
         </div>
       );
@@ -125,9 +137,9 @@ export default class DetailTransaksi extends Component {
   }
 
   getData() {
-    let endpoint = `http://localhost:8000/api/transaksi/${this.getParams()}`;
+    let endpoint = `${baseUrl}/transaksi/${this.getParams()}`;
     axios
-      .get(endpoint)
+      .get(endpoint, authorization)
       .then((response) => {
         let dataTransaksi = response.data;
         let total = 0;
@@ -158,9 +170,13 @@ export default class DetailTransaksi extends Component {
   render() {
     const { transaksi, isLoading } = this.state;
     if (isLoading) {
-      return <div>Loading...</div>;
+      return (
+        <div
+          class="spinner-border text-primary position-absolute top-50 start-50 translate-middle"
+          role="status"
+        ></div>
+      );
     } else {
-      console.log(this.state.transaksi);
       const target = React.createRef();
       return (
         <div className="container">
@@ -168,7 +184,9 @@ export default class DetailTransaksi extends Component {
           <div className="card" ref={target} id="target">
             <div className="card-body">
               <div className=" d-flex justify-content-between">
-                <h1 className="card-title">Transaksi</h1>
+                <h4 className="card-title">
+                  Transaksi Id: {transaksi.id_transaksi}
+                </h4>
                 <div className="">
                   <button
                     className="btn btn-primary"
@@ -195,46 +213,47 @@ export default class DetailTransaksi extends Component {
                   <h6>Tanggal Bayar</h6>
                   {transaksi.tgl_bayar}
                   <br /> <br />
-                  <h6>Status Pembayaran</h6>
+                  <h6>Pembayaran</h6>
                   {this.convertBayar(transaksi.id_transaksi, transaksi.dibayar)}
                   <br />
-                  <h6>Status Proses</h6>
+                  <h6>Status</h6>
                   {this.convertStatus(transaksi.id_transaksi, transaksi.status)}
                   <br />
                   <h6>Petugas</h6>
                   {transaksi.user.username}
                   <br /> <br />
                   <h6>Total</h6>
-                  <h4>{transaksi.total}</h4>
+                  <h4>Rp {formatNumber(transaksi.total)}</h4>
                 </div>
                 <div className="col-lg-8">
                   <h2>Detail Transaksi</h2>
                   <br />
-                  <div className="row">
-                    <div className="col-lg-3">
-                      <h6>Nama Paket</h6>
-                    </div>
-                    <div className="col-lg-3">
-                      <h6>Harga Paket</h6>
-                    </div>
-                    <div className="col-lg-3">
-                      <h6>Qty</h6>
-                    </div>
-                    <div className="col-lg-3">
-                      <h6>Total</h6>
-                    </div>
-                  </div>
-                  <hr />
-                  {transaksi.detail_transaksi.map((detail) => (
-                    <div className="row">
-                      <div className="col-lg-3">{detail.paket.jenis_paket}</div>
-                      <div className="col-lg-3">{detail.paket.harga}</div>
-                      <div className="col-lg-3">{detail.qty}</div>
-                      <div className="col-lg-3">
-                        {detail.paket.harga * detail.qty}
-                      </div>
-                    </div>
-                  ))}
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nama Paket</th>
+                        <th scope="col">Harga Paket</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transaksi.detail_transaksi.map((detail, index) => (
+                        <>
+                          <tr>
+                            <th scope="row">{index + 1}</th>
+                            <td>{detail.paket.jenis_paket}</td>
+                            <td>{detail.paket.harga}</td>
+                            <td>{detail.qty}</td>
+                            <td>
+                              Rp {formatNumber(detail.paket.harga * detail.qty)}
+                            </td>
+                          </tr>
+                        </>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>

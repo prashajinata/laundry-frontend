@@ -11,31 +11,27 @@ export default function MemberCard({
   return (
     <div className="row">
       <div className="col-lg-5">
-        <small className="text-info">Nama</small>
-        <br />
+        <h6 className="text-info">Nama</h6>
         <h5>{nama}</h5>
       </div>
       <div className="col-lg-3">
-        <small className="text-info">Gender</small>
-        <br />
+        <h6 className="text-info">Gender</h6>
         <h5>{jenis_kelamin}</h5>
       </div>
       <div className="col-lg-4">
-        <small className="text-info">Telepon</small>
-        <br />
+        <h6 className="text-info">Telepon</h6>
         <h5>{telepon}</h5>
       </div>
       <div className="col-lg-10">
-        <small className="text-info">Alamat</small>
-        <br />
+        <h6 className="text-info">Alamat</h6>
         <h5>{alamat}</h5>
       </div>
       <div className="col-lg-2">
-        <div className="d-grid gap-1">
-          <button className="btn btn-sm btn-primary" onClick={edit}>
+        <div className="btn-group d-flex">
+          <button className="btn btn-md btn-primary" onClick={edit}>
             Edit
           </button>
-          <button className="btn btn-sm btn-danger" onClick={hapus}>
+          <button className="btn btn-md btn-danger" onClick={hapus}>
             Hapus
           </button>
         </div>

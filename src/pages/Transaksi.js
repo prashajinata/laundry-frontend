@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { Component } from "react";
-import { baseUrl } from "../config";
+import { authorization, baseUrl } from "../config";
 
 export default class Transaksi extends Component {
   constructor() {
@@ -14,9 +14,9 @@ export default class Transaksi extends Component {
   }
 
   getData() {
-    let endpoint = "http://localhost:8000/api/transaksi";
+    let endpoint = `${baseUrl}/transaksi`;
     axios
-      .get(endpoint)
+      .get(endpoint, authorization)
       .then((response) => {
         this.setState({ transaksi: response.data });
       })
@@ -31,7 +31,7 @@ export default class Transaksi extends Component {
     if (window.confirm("Apakah Anda Yakin ingin menghapus transaksi ini?")) {
       let endpoint = `${baseUrl}/transaksi/${id}`;
       axios
-        .delete(endpoint)
+        .delete(endpoint, authorization)
         .then((response) => {
           window.alert(response.data.message);
           this.getData();
@@ -63,60 +63,53 @@ export default class Transaksi extends Component {
   render() {
     return (
       <div className="container">
+        <h3 className="text-primary">List Transaksi</h3>
         <div className="card">
-          <div className="card-header bg-light">
-            <h4 className="">List Transaksi</h4>
-          </div>
-          <div className="card-body">
-            <ul className="list-group">
-              {this.state.transaksi.map((trans) => (
-                <div>
-                  <div className="row">
-                    <div className="col-lg-2">
-                      <h6>Member</h6>
-                      {trans.member.nama}
-                    </div>
-                    <div className="col-lg-3">
-                      <h6>Tanggal Transaksi</h6>
-                      {trans.tgl}
-                    </div>
-                    <div className="col-lg-2">
-                      <h6>Pembayaran</h6>
-                      {this.convertBayar(trans.dibayar)}
-                    </div>
-                    <div className="col-lg-2">
-                      <h6>Status</h6>
-                      {this.convertStatus(trans.status)}
-                    </div>
-                    <div className="col-lg-3">
-                      <div className="btn-group d-flex">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={() => {
-                            window.location.href = `/detail/${trans.id_transaksi}`;
-                          }}
-                        >
-                          Detail
-                        </button>
+          <ul className="list-group list-group-flush">
+            {this.state.transaksi.reverse().map((trans, index) => (
+              <li className="list-group-item" key={index}>
+                <div className="row my-2">
+                  <div className="col-lg-2">
+                    <h6>Member</h6>
+                    {trans.member.nama}
+                  </div>
+                  <div className="col-lg-3">
+                    <h6>Tanggal Transaksi</h6>
+                    {trans.tgl}
+                  </div>
+                  <div className="col-lg-2">
+                    <h6>Pembayaran</h6>
+                    {this.convertBayar(trans.dibayar)}
+                  </div>
+                  <div className="col-lg-2">
+                    <h6>Status</h6>
+                    {this.convertStatus(trans.status)}
+                  </div>
+                  <div className="col-lg-3">
+                    <div className="btn-group d-flex">
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-lg"
+                        onClick={() => {
+                          window.location.href = `/detail/${trans.id_transaksi}`;
+                        }}
+                      >
+                        Detail
+                      </button>
 
-                        <button
-                          type="button"
-                          className="btn btn-danger"
-                          onClick={() =>
-                            this.deleteTransaksi(trans.id_transaksi)
-                          }
-                        >
-                          Hapus
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        className="btn btn-danger btn-lg"
+                        onClick={() => this.deleteTransaksi(trans.id_transaksi)}
+                      >
+                        Hapus
+                      </button>
                     </div>
                   </div>
-                  <br />
                 </div>
-              ))}
-            </ul>
-          </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     );

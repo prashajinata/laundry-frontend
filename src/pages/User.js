@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Modal } from "bootstrap";
 import UserCard from "../components/UserCard";
 import axios from "axios";
+import { authorization, baseUrl } from "../config";
 
 export default class User extends Component {
   constructor() {
@@ -22,9 +23,9 @@ export default class User extends Component {
   }
 
   getData() {
-    let endpoint = "http://localhost:8000/api/users";
+    let endpoint = `${baseUrl}/users`;
     axios
-      .get(endpoint)
+      .get(endpoint, authorization)
       .then((response) => {
         this.setState({ users: response.data });
       })
@@ -38,7 +39,7 @@ export default class User extends Component {
   simpanData(event) {
     event.preventDefault();
     if (this.state.action === "tambah") {
-      let endpoint = "http://localhost:8000/api/users";
+      let endpoint = `${baseUrl}/users`;
       let data = {
         nama: this.state.nama,
         username: this.state.username,
@@ -50,7 +51,7 @@ export default class User extends Component {
       // this.setState({ members: temp });
 
       axios
-        .post(endpoint, data)
+        .post(endpoint, data, authorization)
         .then((response) => {
           window.alert(response.data.message);
           this.getData();
@@ -58,7 +59,7 @@ export default class User extends Component {
         .catch((error) => console.log(error));
       this.modalUser.hide();
     } else if (this.state.action === "ubah") {
-      let endpoint = "http://localhost:8000/api/users/" + this.state.id_user;
+      let endpoint = `${baseUrl}/users/` + this.state.id_user;
 
       let data = {
         nama: this.state.nama,
@@ -67,7 +68,7 @@ export default class User extends Component {
         role: this.state.role,
       };
       axios
-        .put(endpoint, data)
+        .put(endpoint, data, authorization)
         .then((response) => {
           window.alert(response.data.message);
           this.getData();
@@ -96,7 +97,7 @@ export default class User extends Component {
       nama: "",
       username: "",
       password: "",
-      role: "User",
+      role: "",
       action: "tambah",
     });
   }
@@ -119,9 +120,9 @@ export default class User extends Component {
 
   hapusData(id) {
     if (window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
-      let endpoint = "http://localhost:8000/api/users/" + id;
+      let endpoint = `${baseUrl}/users/` + id;
       axios
-        .delete(endpoint)
+        .delete(endpoint, authorization)
         .then((response) => {
           window.alert(response.data.message);
           this.getData();
@@ -132,40 +133,36 @@ export default class User extends Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="card">
-          <div className="card-header bg-primary">
-            <h3 className="text-white">List User</h3>
-          </div>
-          <div className="card-body">
-            <button
-              className="btn btn-secondary btn-md my-1"
-              onClick={() => this.tambahData()}
-            >
-              Tambah data User
-            </button>
-            <hr />
-            <ul className="list-group">
-              {this.state.users.map((user) => (
-                <li className="list-group-item">
-                  <UserCard
-                    nama={user.nama}
-                    username={user.username}
-                    role={user.role}
-                    edit={() => this.ubahData(user.id_user)}
-                    hapus={() => this.hapusData(user.id_user)}
-                  ></UserCard>
-                </li>
-              ))}
-            </ul>
-          </div>
+      <>
+        <div className="container">
+          <h3 className="text-primary">List User</h3>
+          <button
+            className="btn btn-secondary btn-md my-1"
+            onClick={() => this.tambahData()}
+          >
+            Tambah data User
+          </button>
+          <hr />
+          <ul className="list-group">
+            {this.state.users.map((user, index) => (
+              <li className="list-group-item" key={index}>
+                <UserCard
+                  nama={user.nama}
+                  username={user.username}
+                  role={user.role}
+                  edit={() => this.ubahData(user.id_user)}
+                  hapus={() => this.hapusData(user.id_user)}
+                ></UserCard>
+              </li>
+            ))}
+          </ul>
         </div>
-        {/* Modal */}
-        <div className="modal" id="modal_user">
+
+        <div className="modal modal-fade fade" id="modal_user">
           <div className="modal-dialog modal-md">
             <div className="modal-content">
               <div className="modal-header bg-primary">
-                <h4 className="text-white">Form Data Paket</h4>
+                <h4 className="text-white">Form Data User</h4>
               </div>
               <div className="modal-body">
                 <form onSubmit={(ev) => this.simpanData(ev)}>
@@ -200,8 +197,11 @@ export default class User extends Component {
                     value={this.state.role}
                     onChange={(ev) => this.setState({ role: ev.target.value })}
                   >
-                    <option value="User">User</option>
-                    <option value="Admin">Admin</option>
+                    <option defaultValue={""} hidden>
+                      Pilih Role
+                    </option>
+                    <option value="kasir">Kasir</option>
+                    <option value="admin">Admin</option>
                   </select>
                   <button className="btn btn-primary" type="submit">
                     Simpan
@@ -209,10 +209,10 @@ export default class User extends Component {
                 </form>
               </div>
             </div>
+            {/* Modal */}
           </div>
         </div>
-        {/* Modal */}
-      </div>
+      </>
     );
   }
 }

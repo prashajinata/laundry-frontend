@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faJugDetergent } from "@fortawesome/free-solid-svg-icons";
 
 function logout() {
   localStorage.removeItem("user");
@@ -18,7 +20,11 @@ function checkUser() {
           Logged in as <h6>{ls}</h6>
         </small>
 
-        <button type="button" class="btn btn-danger" onClick={() => logout()}>
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={() => logout()}
+        >
           Logout
         </button>
       </div>
@@ -36,8 +42,11 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container">
-        <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
-          <h2 className="navbar-brand">Laundry Melintir</h2>
+        <ul className="navbar-nav mr-auto mt-2 mt-lg-0 gap-2">
+          <div className="navbar-brand">
+            <FontAwesomeIcon icon={faJugDetergent} />
+            DJi's
+          </div>
           <li className="nav-item">
             <Link to="/" className="nav-link">
               Home
@@ -64,9 +73,10 @@ export default function Navbar() {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/form_transaksi" className="nav-link">
-              Form Transaksi
+            <Link to="/form_transaksi" className="nav-link active text-primary">
+              [+] Transaksi Baru
             </Link>
+            <div className="woe"></div>
           </li>
         </ul>
         {checkUser()}

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import MemberCard from "../components/MemberCard";
 import { Modal } from "bootstrap";
 import axios from "axios";
-import { authorization, checkUser } from "../config";
+import { authorization, baseUrl } from "../config";
 
 export default class Member extends Component {
   constructor() {
@@ -23,7 +23,7 @@ export default class Member extends Component {
   }
 
   getData() {
-    let endpoint = "http://localhost:8000/api/member";
+    let endpoint = `${baseUrl}/member`;
     axios
       .get(endpoint, authorization)
       .then((response) => {
@@ -32,9 +32,6 @@ export default class Member extends Component {
       .catch((error) => {
         console.log(error);
       });
-  }
-  componentDidMount() {
-    this.getData();
   }
 
   tambahData() {
@@ -71,7 +68,7 @@ export default class Member extends Component {
     event.preventDefault();
 
     if (this.state.action === "tambah") {
-      let endpoint = "http://localhost:8000/api/member";
+      let endpoint = `${baseUrl}/member`;
       let data = {
         id_member: this.state.id_member,
         nama: this.state.nama,
@@ -92,7 +89,7 @@ export default class Member extends Component {
         .catch((error) => console.log(error));
       this.modalMember.hide();
     } else if (this.state.action === "ubah") {
-      let endpoint = "http://localhost:8000/api/member/" + this.state.id_member;
+      let endpoint = `${baseUrl}/member` + this.state.id_member;
 
       let data = {
         id_member: this.state.id_member,
@@ -125,7 +122,7 @@ export default class Member extends Component {
 
   hapusData(id) {
     if (window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
-      let endpoint = "http://localhost:8000/api/member/" + id;
+      let endpoint = `${baseUrl}/member` + id;
       axios
         .delete(endpoint, authorization)
         .then((response) => {
@@ -136,39 +133,38 @@ export default class Member extends Component {
     }
   }
 
+  componentDidMount() {
+    this.getData();
+  }
+
   render() {
     return (
-      <div className="container">
-        <div className="card">
-          <div className="card-header bg-primary">
-            <h3 className="text-white">List of Member</h3>
-          </div>
-          <div className="card-body">
-            <button
-              className="btn btn-secondary btn-md my-1"
-              onClick={() => this.tambahData()}
-            >
-              Tambah Data Member
-            </button>
-            <hr />
-            <ul className="list-group">
-              {this.state.members.map((member) => (
-                <li className="list-group-item">
-                  <MemberCard
-                    nama={member.nama}
-                    jenis_kelamin={member.jenis_kelamin}
-                    telepon={member.telpon}
-                    alamat={member.alamat}
-                    edit={() => this.ubahData(member.id_member)}
-                    hapus={() => this.hapusData(member.id_member)}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
+      <>
+        <div className="container">
+          <h3 className="text-primary">List Member</h3>
+          <button
+            className="btn btn-secondary btn-md my-1"
+            onClick={() => this.tambahData()}
+          >
+            Tambah Data Member
+          </button>
+          <hr />
+          <ul className="list-group">
+            {this.state.members.map((member, index) => (
+              <li className="list-group-item" key={index}>
+                <MemberCard
+                  nama={member.nama}
+                  jenis_kelamin={member.jenis_kelamin}
+                  telepon={member.telpon}
+                  alamat={member.alamat}
+                  edit={() => this.ubahData(member.id_member)}
+                  hapus={() => this.hapusData(member.id_member)}
+                />
+              </li>
+            ))}
+          </ul>
         </div>
-        {/* Modal */}
-        <div className="modal" id="modal_member">
+        <div className="modal modal-fade fade" id="modal_member">
           <div className="modal-dialog modal-md">
             <div className="modal-content">
               <div className="modal-header bg-primary">
@@ -219,9 +215,10 @@ export default class Member extends Component {
               </div>
             </div>
           </div>
+
+          {/* Modal */}
         </div>
-        {/* Modal */}
-      </div>
+      </>
     );
   }
 }

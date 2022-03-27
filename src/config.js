@@ -1,9 +1,20 @@
-const baseUrl = "http://localhost:8000/api";
+const baseUrl = "http://localhost:8001/api";
 const formatNumber = (num) => {
   return parseFloat(num)
     .toFixed(0)
     .toString()
     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+};
+const userData = () => {
+  let user = JSON.parse(localStorage.getItem("user"));
+  return user;
+};
+
+const getRole = () => {
+  let user = userData();
+  let role = user.role;
+
+  return role;
 };
 
 const checkUser = () => {
@@ -21,4 +32,4 @@ const authorization = {
     Authorization: `Bearer ${localStorage.getItem("token")}`,
   },
 };
-export { baseUrl, formatNumber, authorization, checkUser };
+export { baseUrl, formatNumber, authorization, checkUser, userData, getRole };
