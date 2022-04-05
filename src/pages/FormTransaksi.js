@@ -123,10 +123,6 @@ export default class FormTransaksi extends Component {
       window.alert("Tolong lengkapi data batas waktu");
       return;
     }
-    if (document.getElementById("tgl_bayar").value === "") {
-      window.alert("Tolong lengkapi data tanggal bayar");
-      return;
-    }
     if (document.getElementById("status").value === 2) {
       window.alert("Tolong lengkapi data tanggal bayar");
       return;
@@ -142,7 +138,7 @@ export default class FormTransaksi extends Component {
       id_member: this.state.id_member,
       tgl: this.state.tgl,
       batas_waktu: this.state.batas_waktu,
-      tgl_bayar: this.state.tgl_bayar,
+      tgl_bayar: this.state.dibayar === "1" ? this.state.tgl : "",
       dibayar: this.state.dibayar,
       id_user: user.id_user,
       detail_transaksi: this.state.detail_transaksi,
@@ -192,14 +188,6 @@ export default class FormTransaksi extends Component {
               className="form-control mb-2"
               value={this.state.batas_waktu}
               onChange={(e) => this.setState({ batas_waktu: e.target.value })}
-            />
-            Tanggal Bayar
-            <input
-              id="tgl_bayar"
-              type="date"
-              className="form-control mb-2"
-              value={this.state.tgl_bayar}
-              onChange={(e) => this.setState({ tgl_bayar: e.target.value })}
             />
             Status Bayar
             <select

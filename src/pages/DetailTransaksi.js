@@ -53,10 +53,8 @@ export default class DetailTransaksi extends Component {
   convertToPdf() {
     let element = document.getElementById(`target`);
     let options = {
-      orientation: "portrait",
-      scale: 0.5,
-      format: [2, 4],
       filename: `laporan_${this.getParams()}.pdf`,
+      overrideWidth: 800,
     };
 
     domToPdf(element, options, () => {
@@ -111,7 +109,12 @@ export default class DetailTransaksi extends Component {
         </div>
       );
     } else if (status === 4) {
-      return <h6 className="text-success">Sudah Diambil</h6>;
+      return (
+        <>
+          <h6>Status Proses</h6>
+          <h6 className="text-success">Sudah Diambil</h6>
+        </>
+      );
     }
   }
 
@@ -132,7 +135,12 @@ export default class DetailTransaksi extends Component {
         </div>
       );
     } else if (status === 1) {
-      return <h6 className="text-success">Sudah Dibayar</h6>;
+      return (
+        <>
+          <h6>Status Pembayaran</h6>
+          <h6 className="text-success">Sudah Dibayar</h6>
+        </>
+      );
     }
   }
 
@@ -163,12 +171,70 @@ export default class DetailTransaksi extends Component {
     return id;
   }
 
+  printStruk(trans) {
+    const target = React.createRef();
+
+    return (
+      <div style={{ display: "none" }}>
+        <div ref={target} id="target">
+          <div className="col-lg-12 p-3" id={`struk${trans.id_transaksi}`}>
+            <h3 className="text-center text-info">Dji's Laundry</h3>
+            <h5 className="text-center">
+              Jl. Sudimoro No.1, Mojolangu, Malang
+              <br />
+              Telp. 0341-6969-8484 | IG: @Dji_
+            </h5>
+
+            <h4 className="text-dark">Member: {trans.member.nama}</h4>
+            <h4 className="text-dark" ss>
+              Tgl: {trans.tgl}
+            </h4>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Nama Paket</th>
+                  <th scope="col">Harga Paket</th>
+                  <th scope="col">Qty</th>
+                  <th scope="col">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {trans.detail_transaksi.map((detail, index) => (
+                  <>
+                    <tr>
+                      <th scope="row">{index + 1}</th>
+                      <td>{detail.paket.jenis_paket}</td>
+                      <td>{detail.paket.harga}</td>
+                      <td>{detail.qty}</td>
+                      <td>
+                        Rp {formatNumber(detail.paket.harga * detail.qty)}
+                      </td>
+                    </tr>
+                  </>
+                ))}
+              </tbody>
+            </table>
+            <div className="row mt-2">
+              <div className="col-lg-9"></div>
+              <div className="col-lg-3">
+                <h4> Total: Rp {trans.total} </h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   componentDidMount() {
     this.getData();
   }
 
   render() {
     const { transaksi, isLoading } = this.state;
+
     if (isLoading) {
       return (
         <div
@@ -177,11 +243,11 @@ export default class DetailTransaksi extends Component {
         ></div>
       );
     } else {
-      const target = React.createRef();
       return (
         <div className="container">
+          {this.printStruk(transaksi)}
           <br />
-          <div className="card" ref={target} id="target">
+          <div className="card">
             <div className="card-body">
               <div className=" d-flex justify-content-between">
                 <h4 className="card-title">
@@ -213,10 +279,8 @@ export default class DetailTransaksi extends Component {
                   <h6>Tanggal Bayar</h6>
                   {transaksi.tgl_bayar}
                   <br /> <br />
-                  <h6>Pembayaran</h6>
                   {this.convertBayar(transaksi.id_transaksi, transaksi.dibayar)}
                   <br />
-                  <h6>Status</h6>
                   {this.convertStatus(transaksi.id_transaksi, transaksi.status)}
                   <br />
                   <h6>Petugas</h6>

@@ -108,7 +108,7 @@ export default class Dashboard extends Component {
           </div>
         </div>
         <h2 className="my-2">Aktivitas</h2>
-        <ul className="list-group my-2 aktivitas">
+        <ul className="list-group my-2 aktivitas my-4">
           {this.state.transaksi.reverse().map((trans, index) => (
             <li className="list-group-item" key={index}>
               <div className="row my-2">

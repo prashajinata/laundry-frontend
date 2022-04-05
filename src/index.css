@@ -5,7 +5,6 @@ body {
 
 div .aktivitas {
   max-height: 400px;
-  margin-bottom: 10px;
   overflow-y: scroll;
   overflow-x: hidden;
 
@@ -22,11 +21,13 @@ div .jmlduek {
 nav a.active {
   border-radius: 10px;
   background: teal;
-  transition: border-radius 0.2s;
+  opacity: 0.8;
+  transition: 150ms;
 }
 
 nav a.active:hover {
-  border-radius: 2px;
+  border-radius: 3px;
+  opacity: 1;
   background: teal;
 }
 

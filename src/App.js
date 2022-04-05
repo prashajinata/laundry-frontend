@@ -15,7 +15,7 @@ import DetailTransaksi from "./pages/DetailTransaksi";
 export default function App() {
   return (
     <Router>
-      <Navbar></Navbar>
+      <Navbar />
       <br />
       <Routes>
         <Route path="/" element={<Dashboard />} />
@@ -27,7 +27,7 @@ export default function App() {
         <Route path="/transaksi" element={<Transaksi />} />
         <Route path="/form_transaksi" element={<FormTransaksi />} />
       </Routes>
-      <Footer></Footer>
+      <Footer />
     </Router>
   );
 }
