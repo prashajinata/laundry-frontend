@@ -73,7 +73,7 @@ export default function Navbar() {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/form_transaksi" className="nav-link active text-primary">
+            <Link to="/form_transaksi" className="nav-link active text-white">
               [+] Transaksi Baru
             </Link>
             <div className="woe"></div>

@@ -122,7 +122,7 @@ export default class Member extends Component {
 
   hapusData(id) {
     if (window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
-      let endpoint = `${baseUrl}/member` + id;
+      let endpoint = `${baseUrl}/member/` + id;
       axios
         .delete(endpoint, authorization)
         .then((response) => {

@@ -20,7 +20,14 @@ div .jmlduek {
 }
 
 nav a.active {
-  background: white;
+  border-radius: 10px;
+  background: teal;
+  transition: border-radius 0.2s;
+}
+
+nav a.active:hover {
+  border-radius: 2px;
+  background: teal;
 }
 
 nav a {
